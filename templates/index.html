@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>Таксопарк</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <header>
+            <div class="brand">
+                <div class="logo">
+                    T<span>.</span>
+                </div>
+                <div>
+                    ТАКСОПАРК<small>Панель управления</small>
+                </div>
+            </div>
+            <div class="account">
+                {{ session.username }} · {{ 'Администратор' if session.role == 'admin' else 'Пользователь' }}
+                <form action="{{ url_for('logout') }}" method="post">
+                    <button class="ghost">Выйти</button>
+                </form>
+            </div>
+        </header>
+        <main>
+            <div class="intro">
+                <div>
+                    <p class="eyebrow">РАБОЧЕЕ ПРОСТРАНСТВО</p>
+                    <h1>
+                        Всё под контролем<span>.</span>
+                    </h1>
+                    <p class="muted">Автомобили, водители и ежедневная работа парка.</p>
+                </div>
+                <div class="tag">● СИСТЕМА АКТИВНА</div>
+            </div>
+            {% for category, message in get_flashed_messages(with_categories=true) %}
+                <p class="flash {{ category }}">{{ message }}</p>
+            {% endfor %}
+            <div class="stats">
+                <div>
+                    <small>АВТОМОБИЛИ</small>
+                    <strong>{{ cars|length }}</strong>
+                    <span>Всего в парке</span>
+                </div>
+                <div>
+                    <small>НА ЛИНИИ</small>
+                    <strong>{{ cars|selectattr('status', 'equalto', 'working')|list|length }}</strong>
+                    <span>Сейчас работают</span>
+                </div>
+                <div>
+                    <small>ВОДИТЕЛИ</small>
+                    <strong>{{ drivers|length }}</strong>
+                    <span>В команде</span>
+                </div>
+                <div>
+                    <small>ПОЕЗДКИ</small>
+                    <strong>{{ trips|length }}</strong>
+                    <span>Всего записей</span>
+                </div>
+            </div>
+            <nav>
+                {% for id, name in [('cars','Автомобили'),('drivers','Водители'),('trips','Поездки'),('shifts','Смены'),('maintenance','Обслуживание'),('fuel','Топливо'),('payments','Выплаты')] %}
+                    <a href="#{{ id }}">{{ name }}</a>
+                {% endfor %}
+            </nav>
+            <section id="cars">
+                <div class="section-title">
+                    <div>
+                        <p class="eyebrow">01 / АВТОПАРК</p>
+                        <h2>Автомобили</h2>
+                    </div>
+                    <span>{{ cars|length }} всего</span>
+                </div>
+                {% if session.role == "admin" %}
+                    <details>
+                        <summary>+ Добавить автомобиль</summary>
+                        <form action="/cars" method="post" class="form-row">
+                            <input name="brand" placeholder="Марка" maxlength="100" required>
+                            <input name="model" placeholder="Модель" maxlength="100" required>
+                            <input name="plate" placeholder="Госномер" maxlength="20" required>
+                            <input name="year"
+                                   type="number"
+                                   min="1900"
+                                   max="2100"
+                                   placeholder="Год"
+                                   required>
+                            <select name="status">
+                                {% for key, value in statuses.items() %}
+                                    <option value="{{ key }}">{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                            <button>Добавить</button>
+                        </form>
+                    </details>
+                {% endif %}
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>АВТОМОБИЛЬ</th>
+                                <th>НОМЕР</th>
+                                <th>ГОД</th>
+                                <th>ВОДИТЕЛЬ</th>
+                                <th>СТАТУС</th>
+                                {% if session.role == "admin" %}
+                                    <th></th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for car in cars %}
+                                <tr>
+                                    <td>
+                                        <b>{{ car.brand }} {{ car.model }}</b>
+                                    </td>
+                                    <td>{{ car.plate }}</td>
+                                    <td>{{ car.year }}</td>
+                                    <td>{{ car.driver_name or '—' }}</td>
+                                    <td>
+                                        {% if session.role == "admin" %}
+                                            <form method="post" action="/cars/{{ car.id }}/status">
+                                                <select name="status" onchange="this.form.submit()">
+                                                    {% for key, value in statuses.items() %}
+                                                        <option value="{{ key }}"
+                                                                {{ 'selected' if car.status == key }}>{{ value }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </form>
+                                        {% else %}
+                                            {{ statuses[car.status] }}
+                                        {% endif %}
+                                    </td>
+                                    {% if session.role == "admin" %}
+                                        <td>
+                                            <form method="post"
+                                                  action="/cars/{{ car.id }}/delete"
+                                                  onsubmit="return confirm('Удалить автомобиль?')">
+                                                <button class="delete">Удалить</button>
+                                            </form>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="6">Автомобилей пока нет</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section id="drivers">
+                <div class="section-title">
+                    <div>
+                        <p class="eyebrow">02 / КОМАНДА</p>
+                        <h2>Водители</h2>
+                    </div>
+                    <span>{{ drivers|length }} всего</span>
+                </div>
+                {% if session.role == "admin" %}
+                    <details>
+                        <summary>+ Добавить водителя</summary>
+                        <form action="/drivers" method="post" class="form-row">
+                            <input name="name" placeholder="ФИО" maxlength="150" required>
+                            <input name="phone" placeholder="Телефон" maxlength="30" required>
+                            <input name="license" placeholder="Удостоверение" maxlength="50" required>
+                            <button>Добавить</button>
+                        </form>
+                    </details>
+                {% endif %}
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ВОДИТЕЛЬ</th>
+                                <th>ТЕЛЕФОН</th>
+                                <th>УДОСТОВЕРЕНИЕ</th>
+                                <th>АВТОМОБИЛЬ</th>
+                                {% if session.role == "admin" %}
+                                    <th></th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for driver in drivers %}
+                                <tr>
+                                    <td>
+                                        <b>{{ driver.name }}</b>
+                                    </td>
+                                    <td>{{ driver.phone }}</td>
+                                    <td>{{ driver.license }}</td>
+                                    <td>
+                                        {% if session.role == "admin" %}
+                                            <form action="/drivers/{{ driver.id }}/car" method="post">
+                                                <select name="car_id" onchange="this.form.submit()">
+                                                    <option value="">Не назначен</option>
+                                                    {% for car in cars if not car.driver_name or car.id == driver.car_id %}
+                                                        <option value="{{ car.id }}" {{ 'selected' if driver.car_id == car.id }}>{{ car.brand }} {{ car.model }} · {{ car.plate }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </form>
+                                        {% else %}
+                                            {{ driver.plate or '—' }}
+                                        {% endif %}
+                                    </td>
+                                    {% if session.role == "admin" %}
+                                        <td>
+                                            <form action="/drivers/{{ driver.id }}/delete"
+                                                  method="post"
+                                                  onsubmit="return confirm('Удалить водителя и его связанные записи?')">
+                                                <button class="delete">Удалить</button>
+                                            </form>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="5">Водителей пока нет</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            {% for kind, title, rows in [('trips','Поездки',trips),('shifts','Смены',shifts),('maintenance','Обслуживание',maintenance),('fuel','Топливо',fuel),('payments','Выплаты',payments)] %}
+                <section id="{{ kind }}">
+                    <div class="section-title">
+                        <div>
+                            <p class="eyebrow">ЖУРНАЛ</p>
+                            <h2>{{ title }}</h2>
+                        </div>
+                        <span>{{ rows|length }} записей</span>
+                    </div>
+                    {% if session.role == "admin" %}
+                        <details>
+                            <summary>+ Добавить запись</summary>
+                            <form action="/records/{{ kind }}" method="post" class="form-row">
+                                {% if kind in ["trips","shifts","payments"] %}
+                                    <select name="driver_id" required>
+                                        <option value="">Водитель</option>
+                                        {% for d in drivers %}
+                                            <option value="{{ d.id }}">{{ d.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                {% else %}
+                                    <select name="car_id" required>
+                                        <option value="">Автомобиль</option>
+                                        {% for c in cars %}
+                                            <option value="{{ c.id }}">{{ c.brand }} {{ c.model }} · {{ c.plate }}</option>
+                                        {% endfor %}
+                                    </select>
+                                {% endif %}
+                                <input type="date" name="date" required>
+                                {% if kind in ["trips","maintenance"] %}
+                                    <input name="description"
+                                           placeholder="{{ 'Маршрут' if kind == 'trips' else 'Описание работ' }}"
+                                           required>
+                                {% endif %}
+                                {% if kind == "fuel" %}
+                                    <input type="number"
+                                           step="0.01"
+                                           min="0.01"
+                                           name="liters"
+                                           placeholder="Литры"
+                                           required>
+                                {% endif %}
+                                <input type="number"
+                                       step="0.01"
+                                       min="{{ '0.1' if kind == 'shifts' else '0' }}"
+                                       name="amount"
+                                       placeholder="{{ 'Часы' if kind == 'shifts' else 'Сумма, ₽' }}"
+                                       required>
+                                <button>Добавить</button>
+                            </form>
+                        </details>
+                    {% endif %}
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ДАТА</th>
+                                    <th>{{ 'АВТОМОБИЛЬ' if kind in ['maintenance','fuel'] else 'ВОДИТЕЛЬ' }}</th>
+                                    <th>ДЕТАЛИ</th>
+                                    <th>{{ 'ЧАСЫ' if kind == 'shifts' else 'СУММА' }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in rows %}
+                                    <tr>
+                                        <td>{{ row.trip_date if kind == 'trips' else row.shift_date if kind == 'shifts' else row.service_date if kind == 'maintenance' else row.fuel_date if kind == 'fuel' else row.payment_date }}</td>
+                                        <td>{{ row.plate if kind in ['maintenance','fuel'] else row.driver }}</td>
+                                        <td>{{ row.route if kind == 'trips' else row.description if kind == 'maintenance' else (row.liters|string + ' л') if kind == 'fuel' else '—' }}</td>
+                                        <td>{{ row.price if kind == 'trips' else row.hours if kind == 'shifts' else row.cost if kind in ['maintenance','fuel'] else row.amount }} {{ '' if kind == 'shifts' else '₽' }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="4">Записей пока нет</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            {% endfor %}
+            <footer>
+                ТАКСОПАРК <span>·</span> Учёт автопарка
+            </footer>
+        </main>
+    </body>
+</html>

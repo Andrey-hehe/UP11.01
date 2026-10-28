@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+    <section class="narrow">
+        <p class="eyebrow">ОФОРМЛЕНИЕ АРЕНДЫ</p>
+        <h1>{{ car.brand }} {{ car.model }}</h1>
+        <p>{{ car.plate }} · {{ car.daily_rate }} ₽ в сутки</p>
+        <p class="muted">Стоимость рассчитывается по числу суток между датами начала и окончания.</p>
+        <form class="stack" method="post">
+            <label>
+                Дата начала<input name="start_date" type="date" min="{{ today }}" required>
+            </label>
+            <label>
+                Дата окончания<input name="end_date" type="date" min="{{ today }}" required>
+            </label>
+            <button>Перейти к оплате</button>
+        </form>
+    </section>
+{% endblock %}

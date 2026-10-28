@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+    <section>
+        <p class="eyebrow">ИСТОРИЯ</p>
+        <h1>Платежи</h1>
+        {% if admin %}
+            <form class="form-row">
+                <input name="username"
+                       placeholder="Арендатор"
+                       value="{{ request.args.get('username', '') }}">
+                <select name="status">
+                    <option value="">Все статусы</option>
+                    {% for s in ['pending','success','failed'] %}
+                        <option {{ 'selected' if request.args.get("status") == s }}>{{ s }}</option>
+                    {% endfor %}
+                </select>
+                <input type="date" name="from" value="{{ request.args.get('from', '') }}">
+                <input type="date" name="to" value="{{ request.args.get('to', '') }}">
+                <button>Найти</button>
+            </form>
+        {% endif %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ДАТА</th>
+                        <th>АРЕНДА</th>
+                        {% if admin %}
+                            <th>АРЕНДАТОР</th>
+                        {% endif %}
+                        <th>СУММА</th>
+                        <th>СТАТУС</th>
+                        <th>ТРАНЗАКЦИЯ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in rows %}
+                        <tr>
+                            <td>{{ p.created_at.strftime("%d.%m.%Y %H:%M") }}</td>
+                            <td>№{{ p.rental_id }}</td>
+                            {% if admin %}
+                                <td>{{ p.username }}</td>
+                            {% endif %}
+                            <td>{{ p.amount }} ₽</td>
+                            <td>{{ {'pending':'Ожидает','success':'Успешно','failed':'Отказ'}[p.status] }}</td>
+                            <td>{{ p.transaction_number }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6">Платежей пока нет</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+{% endblock %}

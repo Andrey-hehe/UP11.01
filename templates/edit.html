@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+    <section class="narrow">
+        <p class="eyebrow">{{ spec.title|upper }}</p>
+        <h1>{{ 'Изменить запись' if row else 'Новая запись' }}</h1>
+        <form method="post" class="stack">
+            {% for field,label,type in spec.fields %}
+                <label>
+                    {{ label }}
+                    {% if type == "car" %}
+                        <select name="{{ field }}" required>
+                            <option value="">Выберите автомобиль</option>
+                            {% for car in cars %}
+                                <option value="{{ car.id }}"
+                                        {{ 'selected' if row and row[field] == car.id }}>{{ car.plate }} · {{ car.brand }} {{ car.model }} ({{ car.status }})</option>
+                            {% endfor %}
+                        </select>
+                    {% elif type == "driver_status" %}
+                        <select name="{{ field }}">
+                            {% for val,label in [('active','Работает'),('vacation','Отпуск'),('fired','Уволен')] %}
+                                <option value="{{ val }}"
+                                        {{ 'selected' if row and row[field] == val }}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    {% elif type == "service_type" %}
+                        <select name="{{ field }}">
+                            {% for val,label in [('TO','ТО'),('repair','Ремонт')] %}
+                                <option value="{{ val }}"
+                                        {{ 'selected' if row and row[field] == val }}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                        <input name="{{ field }}"
+                               type="{{ type }}"
+                               value="{{ row[field] if row else '' }}"
+                               {% if type == 'number' %} step="{{ '1' if field in ['year','experience'] else '0.01' }}" min="{{ '1900' if field == 'year' else '0' }}" {% endif %}
+                               {{ '' if field == 'description' else 'required' }}>
+                    {% endif %}
+                </label>
+            {% endfor %}
+            <button>Сохранить</button>
+        </form>
+    </section>
+{% endblock %}

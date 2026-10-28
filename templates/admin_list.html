@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block content %}
+    <section>
+        <div class="section-title">
+            <div>
+                <p class="eyebrow">УПРАВЛЕНИЕ</p>
+                <h1>{{ spec.title }}</h1>
+            </div>
+            <a class="button" href="/admin/{{ kind }}/edit">+ Добавить</a>
+        </div>
+        <form class="form-row">
+            {% if kind in ["cars","drivers"] %}
+                <input name="status"
+                       placeholder="Статус"
+                       value="{{ request.args.get('status', '') }}">
+            {% else %}
+                <select name="car_id">
+                    <option value="">Все автомобили</option>
+                    {% for c in cars %}
+                        <option value="{{ c.id }}"
+                                {{ 'selected' if request.args.get("car_id") == c.id|string }}>{{ c.plate }} · {{ c.brand }} {{ c.model }}</option>
+                    {% endfor %}
+                </select>
+                <input type="date" name="from" value="{{ request.args.get('from', '') }}">
+                <input type="date" name="to" value="{{ request.args.get('to', '') }}">
+            {% endif %}
+            <button>Фильтр</button>
+            <a href="/admin/{{ kind }}">Сбросить</a>
+        </form>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>№</th>
+                        {% for field,label,type in spec.fields %}
+                            <th>{{ label|upper }}</th>
+                        {% endfor %}
+                        {% if kind in ["cars","maintenance"] %}
+                            <th>СТАТУС</th>
+                        {% endif %}
+                        <th>ДЕЙСТВИЯ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in rows %}
+                        <tr>
+                            <td>{{ row.id }}</td>
+                            {% for field,label,type in spec.fields %}
+                                <td>
+                                    {% if type == "car" %}
+                                        {% for c in cars if c.id == row[field] %}
+                                            {{ c.plate }}
+                                        {% endfor %}
+                                    {% else %}
+                                        {{ row[field] }}
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                            {% if kind == "cars" %}
+                                <td>{{ row.status }}</td>
+                            {% elif kind == "maintenance" %}
+                                <td>{{ 'Выполнено' if row.is_completed else 'В работе' }}</td>
+                            {% endif %}
+                            <td>
+                                <a href="/admin/{{ kind }}/edit/{{ row.id }}">Изменить</a>
+                                {% if kind == "maintenance" and not row.is_completed %}
+                                    <form action="/admin/maintenance/{{ row.id }}/complete" method="post">
+                                        <button>Выполнено</button>
+                                    </form>
+                                {% endif %}
+                                <form action="/admin/{{ kind }}/delete/{{ row.id }}"
+                                      method="post"
+                                      onsubmit="return confirm('Удалить запись?')">
+                                    <button class="delete">Удалить</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="10">Записей пока нет</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="intro">
+        <div>
+            <p class="eyebrow">РАБОЧЕЕ ПРОСТРАНСТВО</p>
+            <h1>
+                Обзор автопарка<span>.</span>
+            </h1>
+            <p class="muted">Состояние автомобилей и результаты аренды.</p>
+        </div>
+    </div>
+    <div class="stats">
+        <div>
+            <small>АКТИВНЫЕ АРЕНДЫ</small>
+            <strong>{{ active }}</strong>
+        </div>
+        <div>
+            <small>СВОБОДНЫ</small>
+            <strong>{{ counts.free }}</strong>
+        </div>
+        <div>
+            <small>В АРЕНДЕ</small>
+            <strong>{{ counts.rented }}</strong>
+        </div>
+        <div>
+            <small>НА РЕМОНТЕ</small>
+            <strong>{{ counts.repair }}</strong>
+        </div>
+    </div>
+    <section style="margin-top:20px">
+        <h2>Выручка от аренды</h2>
+        <form class="form-row">
+            <input type="date" name="start" value="{{ request.args.get('start', '') }}">
+            <input type="date" name="end" value="{{ request.args.get('end', '') }}">
+            <button>Показать</button>
+        </form>
+        <p>
+            <strong>{{ revenue }} ₽</strong> по успешным платежам за период
+        </p>
+        <p class="muted">Зарезервировано автомобилей: {{ counts.reserved }}</p>
+    </section>
+{% endblock %}

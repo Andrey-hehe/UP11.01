@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+    <section>
+        <p class="eyebrow">АРЕНДА</p>
+        <h1>{{ 'Все аренды' if admin else 'Мои аренды' }}</h1>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>№</th>
+                        {% if admin %}
+                            <th>АРЕНДАТОР</th>
+                        {% endif %}
+                        <th>АВТОМОБИЛЬ</th>
+                        <th>ПЕРИОД</th>
+                        <th>СУММА</th>
+                        <th>СТАТУС</th>
+                        <th>ДЕЙСТВИЯ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in rows %}
+                        <tr>
+                            <td>{{ r.id }}</td>
+                            {% if admin %}
+                                <td>{{ r.username }}</td>
+                            {% endif %}
+                            <td>{{ r.brand }} {{ r.model }} · {{ r.plate }}</td>
+                            <td>{{ r.start_date }} — {{ r.end_date }}</td>
+                            <td>{{ r.total_price }} ₽</td>
+                            <td>{{ {'pending_payment':'Ожидает оплаты','active':'Активна','completed':'Завершена','cancelled':'Отменена'}[r.status] }}</td>
+                            <td>
+                                {% if r.status == "pending_payment" and not admin %}
+                                    <a href="/rent/pay/{{ r.id }}">Оплатить</a>
+                                {% endif %}
+                                {% if r.status == "active" %}
+                                    <form action="/rent/{{ r.id }}/complete" method="post">
+                                        <button>Завершить</button>
+                                    </form>
+                                {% endif %}
+                                {% if admin and r.status in ["active","pending_payment"] %}
+                                    <form action="/rent/{{ r.id }}/cancel"
+                                          method="post"
+                                          onsubmit="return confirm('Отменить аренду?')">
+                                        <button class="delete">Отменить</button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7">Записей пока нет</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+{% endblock %}

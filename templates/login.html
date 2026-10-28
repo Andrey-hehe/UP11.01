@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>Вход · Таксопарк</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <main class="login">
+            <div class="logo">
+                T<span>.</span>
+            </div>
+            <p class="eyebrow">УПРАВЛЕНИЕ АВТОПАРКОМ</p>
+            <h1>С возвращением</h1>
+            <p class="muted">Войдите, чтобы открыть рабочее пространство.</p>
+            {% for category, message in get_flashed_messages(with_categories=true) %}
+                <p class="flash {{ category }}">{{ message }}</p>
+            {% endfor %}
+            <form method="post" class="stack">
+                <label>
+                    Логин<input name="username" required autofocus>
+                </label>
+                <label>
+                    Пароль<input type="password" name="password" required>
+                </label>
+                <button>Войти в систему →</button>
+            </form>
+        </main>
+    </body>
+</html>

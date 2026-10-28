@@ -1,0 +1,424 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+
+* {
+    box-sizing: border-box
+}
+
+html {
+    scroll-behavior: smooth
+}
+
+body {
+    margin: 0;
+    background: #f5f6f3;
+    color: #202921;
+    font-family: Manrope, Arial, sans-serif;
+    font-size: 14px
+}
+
+header {
+    background: #fff;
+    border-bottom: 1px solid #e5e9e3;
+    padding: 18px max(5%, calc((100% - 1280px)/2));
+    display: flex;
+    justify-content: space-between;
+    align-items: center
+}
+
+.brand,
+.account {
+    display: flex;
+    align-items: center;
+    gap: 12px
+}
+
+.brand {
+    font-weight: 800;
+    letter-spacing: .08em
+}
+
+.brand small {
+    display: block;
+    color: #89928a;
+    font-size: 10px;
+    letter-spacing: 0;
+    font-weight: 500
+}
+
+.logo {
+    font-size: 26px;
+    background: #19251c;
+    color: white;
+    border-radius: 11px;
+    width: 42px;
+    height: 42px;
+    text-align: center;
+    line-height: 42px;
+    font-weight: 800
+}
+
+.logo span,
+h1 span,
+footer span {
+    color: #a8db55
+}
+
+main {
+    max-width: 1280px;
+    margin: auto;
+    padding: 42px 24px
+}
+
+.intro {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px
+}
+
+h1 {
+    font-size: 38px;
+    letter-spacing: -.05em;
+    margin: 7px 0
+}
+
+h2 {
+    font-size: 23px;
+    letter-spacing: -.04em;
+    margin: 4px 0
+}
+
+.eyebrow {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .15em;
+    color: #849287
+}
+
+.muted {
+    color: #829085
+}
+
+.tag {
+    background: #eaf3de;
+    color: #638b37;
+    border-radius: 30px;
+    padding: 10px 14px;
+    font-size: 10px;
+    font-weight: 800
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px
+}
+
+.stats>div,
+section {
+    background: white;
+    border: 1px solid #e5eae4;
+    border-radius: 14px
+}
+
+.stats>div {
+    padding: 22px
+}
+
+.stats small,
+.stats span {
+    display: block;
+    color: #91a095;
+    font-size: 10px;
+    font-weight: 700
+}
+
+.stats strong {
+    display: block;
+    font-size: 32px;
+    margin: 12px 0 4px
+}
+
+.stats span {
+    font-size: 12px;
+    font-weight: 400
+}
+
+nav {
+    display: flex;
+    gap: 8px;
+    overflow: auto;
+    padding: 25px 0
+}
+
+nav a {
+    white-space: nowrap;
+    text-decoration: none;
+    color: #68776a;
+    background: #e9ede7;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700
+}
+
+nav a:hover {
+    background: #dce8d2;
+    color: #263d24
+}
+
+section {
+    padding: 24px;
+    margin-bottom: 18px;
+    scroll-margin-top: 20px
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between
+}
+
+.section-title>span {
+    color: #96a198;
+    font-size: 12px
+}
+
+details {
+    margin: 16px 0
+}
+
+summary {
+    cursor: pointer;
+    color: #547b32;
+    font-weight: 700
+}
+
+.form-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 15px
+}
+
+input,
+select,
+button {
+    font: inherit;
+    border: 1px solid #dce4dc;
+    border-radius: 8px;
+    padding: 10px;
+    background: white;
+    color: #27352a
+}
+
+input,
+select {
+    min-width: 0
+}
+
+button {
+    background: #263c2b;
+    color: white;
+    border: 0;
+    font-weight: 700;
+    cursor: pointer
+}
+
+button:hover {
+    opacity: .85
+}
+
+.ghost {
+    background: #f0f3ef;
+    color: #48594b
+}
+
+.delete {
+    background: none;
+    color: #bd6e68;
+    font-size: 12px;
+    padding: 5px
+}
+
+.table-wrap {
+    overflow-x: auto
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+    text-align: left;
+    white-space: nowrap
+}
+
+th {
+    font-size: 10px;
+    letter-spacing: .08em;
+    color: #9aa69b
+}
+
+td,
+th {
+    padding: 14px 12px;
+    border-bottom: 1px solid #f0f3ef
+}
+
+td {
+    color: #647166
+}
+
+td b {
+    color: #263329
+}
+
+tr:last-child td {
+    border-bottom: 0
+}
+
+td select {
+    padding: 7px;
+    font-size: 12px;
+    background: #f5f8f3
+}
+
+.flash {
+    padding: 13px 16px;
+    border-radius: 8px;
+    background: #e8f4df;
+    color: #406d30
+}
+
+.flash.error {
+    background: #fff0ed;
+    color: #a44738
+}
+
+footer {
+    padding: 20px 0;
+    color: #9aa69b;
+    font-size: 11px;
+    font-weight: 700
+}
+
+.login {
+    max-width: 440px;
+    margin: 9vh auto;
+    background: white;
+    border: 1px solid #e5eae4;
+    border-radius: 18px;
+    padding: 38px
+}
+
+.login h1 {
+    font-size: 30px
+}
+
+.login .logo {
+    margin-bottom: 30px
+}
+
+.stack {
+    display: grid;
+    gap: 16px;
+    margin-top: 28px
+}
+
+.stack label {
+    display: grid;
+    gap: 8px;
+    font-weight: 700
+}
+
+.stack input {
+    width: 100%
+}
+
+.stack button {
+    padding: 14px
+}
+
+@media(max-width:700px) {
+    .stats {
+        grid-template-columns: repeat(2, 1fr)
+    }
+
+    .intro {
+        display: block
+    }
+
+    .tag {
+        display: inline-block;
+        margin-top: 15px
+    }
+
+    h1 {
+        font-size: 30px
+    }
+
+    .account {
+        font-size: 11px
+    }
+
+    section {
+        padding: 16px
+    }
+
+    .login {
+        margin: 20px
+    }
+}
+
+a {
+    color: #507c35
+}
+
+.brand {
+    text-decoration: none;
+    color: inherit
+}
+
+.button {
+    display: inline-block;
+    background: #263c2b;
+    color: white;
+    padding: 11px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px
+}
+
+.car-card {
+    background: white;
+    border: 1px solid #e5eae4;
+    border-radius: 14px;
+    padding: 24px
+}
+
+.car-icon {
+    background: #edf4e6;
+    border-radius: 12px;
+    font-size: 36px;
+    padding: 20px;
+    margin-bottom: 20px
+}
+
+.car-card .button {
+    margin-top: 10px
+}
+
+.narrow {
+    max-width: 550px;
+    margin: 10px auto
+}
+
+.account a {
+    white-space: nowrap
+}

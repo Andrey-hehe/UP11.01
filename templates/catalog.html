@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="intro">
+        <div>
+            <p class="eyebrow">АВТОМОБИЛИ ДЛЯ РАБОТЫ</p>
+            <h1>
+                Ваш следующий маршрут<span>.</span>
+            </h1>
+            <p class="muted">Выберите свободный автомобиль и оформите аренду онлайн.</p>
+        </div>
+        <div class="tag">● {{ cars|length }} ДОСТУПНО</div>
+    </div>
+    <div class="cards">
+        {% for car in cars %}
+            <article class="car-card">
+                <div class="car-icon">🚕</div>
+                <p class="eyebrow">{{ car.year }} · {{ car.plate }}</p>
+                <h2>{{ car.brand }} {{ car.model }}</h2>
+                <p>
+                    <strong>{{ car.daily_rate }} ₽</strong>
+                    <span class="muted">/ сутки</span>
+                </p>
+                <a class="button" href="/cars/{{ car.id }}">Подробнее →</a>
+            </article>
+        {% else %}
+            <section>
+                Свободных автомобилей сейчас нет.
+            </section>
+        {% endfor %}
+    </div>
+{% endblock %}

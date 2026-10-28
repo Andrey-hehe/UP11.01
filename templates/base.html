@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>
+            {% block title %}
+                МойТаксопарк
+            {% endblock %}
+        </title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <header>
+            <a href="/" class="brand">
+                <div class="logo">
+                    T<span>.</span>
+                </div>
+                <div>
+                    МОЙТАКСОПАРК<small>Аренда и управление</small>
+                </div>
+            </a>
+            <div class="account">
+                {% if session.user_id %}
+                    {{ session.username }} · {{ 'Администратор' if session.role == 'admin' else 'Арендатор' }}
+                    <form action="/logout" method="post">
+                        <button class="ghost">Выйти</button>
+                    </form>
+                {% else %}
+                    <a href="/login">Войти</a>
+                    <a href="/register">Регистрация</a>
+                {% endif %}
+            </div>
+        </header>
+        <main>
+            <nav>
+                <a href="/">Каталог</a>
+                {% if session.role == "renter" %}
+                    <a href="/my_rentals">Мои аренды</a>
+                    <a href="/my_payments">Мои платежи</a>
+                {% elif session.role == "admin" %}
+                    <a href="/admin">Обзор</a>
+                    <a href="/admin/cars">Автомобили</a>
+                    <a href="/admin/drivers">Водители</a>
+                    <a href="/admin/rentals">Аренды</a>
+                    <a href="/admin/payments">Платежи</a>
+                    <a href="/admin/maintenance">Обслуживание</a>
+                    <a href="/admin/fuel_records">Заправки</a>
+                    <a href="/admin/users">Пользователи</a>
+                {% endif %}
+            </nav>
+            {% for category, message in get_flashed_messages(with_categories=true) %}
+                <p class="flash {{ category }}">{{ message }}</p>
+            {% endfor %}
+            {% block content %}{% endblock %}
+            <footer>
+                МОЙТАКСОПАРК <span>·</span> Учёт автопарка
+            </footer>
+        </main>
+    </body>
+</html>

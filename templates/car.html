@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+    <section>
+        <p class="eyebrow">АВТОМОБИЛЬ</p>
+        <h1>{{ car.brand }} {{ car.model }}</h1>
+        <p>Госномер: {{ car.plate }} · {{ car.year }} год</p>
+        <p>VIN: {{ car.vin }} · Статус: {{ car.status }}</p>
+        <h2>{{ car.daily_rate }} ₽ / сутки</h2>
+        {% if car.status == "free" %}
+            {% if open_rental %}
+                <p>У вас уже есть открытая аренда. Чтобы взять другой автомобиль, сначала завершите её.</p>
+                <a class="button" href="/my_rentals">Мои аренды →</a>
+            {% else %}
+                <a class="button" href="/rent/new/{{ car.id }}">Оформить аренду →</a>
+            {% endif %}
+        {% endif %}
+    </section>
+{% endblock %}

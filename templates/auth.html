@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+    <section class="narrow">
+        <p class="eyebrow">{{ 'НОВЫЙ АККАУНТ' if register else 'ЛИЧНЫЙ КАБИНЕТ' }}</p>
+        <h1>{{ 'Регистрация' if register else 'Вход' }}</h1>
+        <form method="post" class="stack">
+            <label>
+                Логин<input name="username" maxlength="50" required>
+            </label>
+            {% if register %}
+                <label>
+                    Электронная почта<input type="email" name="email" maxlength="120" required>
+                </label>
+                <label>
+                    ФИО водителя<input name="name" maxlength="100" required>
+                </label>
+                <label>
+                    Телефон<input name="phone" maxlength="30" required>
+                </label>
+                <label>
+                    Номер водительского удостоверения<input name="license" maxlength="30" required>
+                </label>
+                <label>
+                    Стаж, лет<input name="experience" type="number" min="0" required>
+                </label>
+            {% endif %}
+            <label>
+                Пароль<input name="password" type="password" minlength="8" required>
+            </label>
+            <button>{{ 'Зарегистрироваться' if register else 'Войти' }}</button>
+        </form>
+        <p>
+            <a href="{{ '/login' if register else '/register' }}">{{ 'Уже есть аккаунт? Войти' if register else 'Нет аккаунта? Зарегистрироваться' }}</a>
+        </p>
+    </section>
+{% endblock %}

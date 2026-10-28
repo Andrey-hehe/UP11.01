@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+    <section class="narrow">
+        <p class="eyebrow">ОПЛАТА АРЕНДЫ</p>
+        <h1>Аренда №{{ rental.id }}</h1>
+        <p>{{ rental.brand }} {{ rental.model }} · {{ rental.plate }}</p>
+        <h2>{{ rental.total_price }} ₽</h2>
+        <p class="muted">Это учебный платёжный экран. Деньги не списываются, данные банковских карт не вводятся. Резерв действует 15 минут.</p>
+        {% if rental.status == "pending_payment" %}
+            <form method="post" class="form-row">
+                <button name="result" value="success">Оплатить</button>
+                <button class="ghost" name="result" value="failed">Отказаться от оплаты</button>
+            </form>
+        {% else %}
+            <p>Статус аренды: {{ rental.status }}</p>
+        {% endif %}
+    </section>
+{% endblock %}

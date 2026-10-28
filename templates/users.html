@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+    <section>
+        <p class="eyebrow">ДОСТУП</p>
+        <h1>Пользователи</h1>
+        <p class="muted">Арендаторы создают учётные записи через регистрацию. Администраторы добавляются командой create-user.</p>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ЛОГИН</th>
+                        <th>EMAIL</th>
+                        <th>РОЛЬ</th>
+                        <th>ВОДИТЕЛЬ</th>
+                        <th>СОЗДАН</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in rows %}
+                        <tr>
+                            <td>{{ u.username }}</td>
+                            <td>{{ u.email }}</td>
+                            <td>{{ u.role }}</td>
+                            <td>{{ u.name or '—' }}</td>
+                            <td>{{ u.created_at.strftime("%d.%m.%Y") }}</td>
+                            <td>
+                                {% if u.id != session.user_id %}
+                                    <form method="post"
+                                          action="/admin/users/{{ u.id }}/delete"
+                                          onsubmit="return confirm('Удалить пользователя?')">
+                                        <button class="delete">Удалить</button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+{% endblock %}
